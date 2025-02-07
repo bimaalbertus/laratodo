@@ -8,8 +8,7 @@
     <style>
         /* Style untuk body utama */
         body.main-body {
-            background-color: #1c1c1c;
-            /* Warna latar belakang */
+            background-color: #1c1c1c; /* Warna latar belakang */
             color: white;
             font-family: Arial, sans-serif;
             display: flex;
@@ -172,24 +171,34 @@
 
 <body class="main-body">
     <div class="container">
+        <!-- Judul Halaman -->
         <h1 class="title">Todo List</h1>
+
+        <!-- Formulir untuk Menambah Todo Baru -->
         <form action="{{ url('/todos/add') }}" method="POST" class="form">
+            @csrf <!-- CSRF token untuk mengamankan form -->
+            
+            <!-- Input untuk Nama Tugas -->
             <input type="text" name="task" placeholder="Input Task" class="input-text" required>
 
+            <!-- Dropdown untuk memilih prioritas tugas -->
             <select name="priority" class="input-select">
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
             </select>
 
-            <!-- Input untuk memilih tanggal -->
+            <!-- Input untuk memilih tanggal tugas -->
             <input type="date" name="date" class="input-date" required>
 
+            <!-- Tombol untuk menambahkan todo -->
             <button type="submit" class="btn-submit">Add</button>
         </form>
 
+        <!-- Formulir untuk Menghapus Semua Todo jika ada -->
         @if (count($todos) > 0)
             <form action="{{ url('/todos/clear') }}" method="POST">
+                @csrf
                 <input type="submit" value="Delete All Tasks" class="btn-delete-all">
             </form>
         @endif
@@ -199,26 +208,33 @@
             @foreach ($todos as $index => $todo)
                 <div class="todo-item">
                     <div class="todo-content">
+                        <!-- Formulir untuk menandai todo selesai atau belum -->
                         <form action="{{ url('/todos/mark-done/' . $index) }}" method="POST">
+                            @csrf
                             <input type="submit" name="status" value="{{ $todo['status'] ? 'Undone' : 'Done' }}"
                                 class="btn-mark-done" />
                         </form>
+
                         <div>
+                            <!-- Menampilkan Tugas dengan Garis Coret jika sudah selesai -->
                             <span class="{{ $todo['status'] ? 'completed' : '' }}">{{ $todo['task'] }}</span>
                             <span class="priority">{{ $todo['priority'] }}</span>
                             <div class="date">{{ $todo['date'] }}</div>
                         </div>
                     </div>
 
+                    <!-- Formulir untuk Menghapus Todo -->
                     <form action="{{ url('/todos/delete/' . $index) }}" method="POST">
+                        @csrf
                         <button type="submit" class="btn-delete">
-                            <i class="ti ti-trash"></i> <!-- Make sure you have the trash icon or use your own -->
+                            <i class="ti ti-trash"></i> <!-- Tombol untuk menghapus todo -->
                         </button>
                     </form>
                 </div>
             @endforeach
         </div>
 
+        <!-- Pesan Jika Tidak Ada Todo -->
         @if (count($todos) === 0)
             <p class="empty-message">Nothing to display.</p>
         @endif
